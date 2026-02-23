@@ -81,6 +81,11 @@ export default function Home() {
   const totalDepo = data.reduce((acc, item) => acc + (Number(item.depo) || 0), 0)
   const totalBalance = totalHarga - totalDepo
 
+  // Kira total ikut kategori
+  const totalAiman = data.filter(i => i.kategori === 'Aiman').reduce((acc, item) => acc + (Number(item.harga) || 0), 0)
+  const totalDinda = data.filter(i => i.kategori === 'Dinda').reduce((acc, item) => acc + (Number(item.harga) || 0), 0)
+  const totalCommon = data.filter(i => i.kategori === 'Common').reduce((acc, item) => acc + (Number(item.harga) || 0), 0)
+
   // Helper untuk warna kategori
   const getCatColor = (cat: string) => {
     switch (cat) {
@@ -112,16 +117,34 @@ export default function Home() {
           </div>
         </header>
 
-        {/* Hero Card */}
-        <div className="bg-[#121212] rounded-[2rem] p-8 text-white flex justify-between items-center mb-10 shadow-lg">
-          <div>
-            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Total Expenses</p>
-            <p className="text-2xl font-semibold tracking-tight">RM{totalHarga.toLocaleString()}</p>
+        {/* Hero Card Updated with Category Totals */}
+        <div className="bg-[#121212] rounded-[2rem] p-8 text-white mb-10 shadow-lg">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Total Expenses</p>
+              <p className="text-3xl font-semibold tracking-tight">RM{totalHarga.toLocaleString()}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-[10px] font-bold text-green-400 uppercase tracking-widest mb-1">Total Paid</p>
+              <p className="text-2xl font-semibold tracking-tight">RM{totalDepo.toLocaleString()}</p>
+            </div>
           </div>
-          <div className="w-[1px] h-10 bg-gray-800"></div>
-          <div>
-            <p className="text-[10px] font-bold text-green-400 uppercase tracking-widest mb-1">Paid Amount</p>
-            <p className="text-2xl font-semibold tracking-tight">RM{totalDepo.toLocaleString()}</p>
+          
+          <div className="h-[1px] w-full bg-gray-800 mb-6"></div>
+
+          <div className="grid grid-cols-3 gap-2">
+            <div>
+              <p className="text-[9px] font-bold text-blue-400 uppercase mb-1">Aiman</p>
+              <p className="text-sm font-semibold">RM{totalAiman.toLocaleString()}</p>
+            </div>
+            <div>
+              <p className="text-[9px] font-bold text-pink-400 uppercase mb-1">Dinda</p>
+              <p className="text-sm font-semibold">RM{totalDinda.toLocaleString()}</p>
+            </div>
+            <div>
+              <p className="text-[9px] font-bold text-amber-400 uppercase mb-1">Common</p>
+              <p className="text-sm font-semibold">RM{totalCommon.toLocaleString()}</p>
+            </div>
           </div>
         </div>
 
@@ -179,7 +202,6 @@ export default function Home() {
             </Droppable>
           </DragDropContext>
 
-          {/* Button Add Item - Tetap di bawah List */}
           <button 
             onClick={() => setShowModal(true)}
             className="w-full mt-8 bg-[#121212] text-white py-5 rounded-2xl flex items-center justify-center gap-3 shadow-md active:scale-[0.98] transition-all"
@@ -191,7 +213,7 @@ export default function Home() {
 
         {/* Footer */}
         <footer className="mt-20 text-center">
-          <p className="text-[10px] font-bold text-gray-300 uppercase tracking-[0.4em]">Peninggggg!</p>
+          <p className="text-[10px] font-bold text-gray-300 uppercase tracking-[0.4em]">Hmmm</p>
         </footer>
       </div>
 
@@ -199,8 +221,8 @@ export default function Home() {
       {showModal && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm px-6">
           <div className="bg-white w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl animate-in zoom-in-95 duration-200">
-            <h2 className="text-lg font-bold mb-6 tracking-tight uppercase text-center">
-              {editId ? 'Update Item' : 'New Item'}
+            <h2 className="text-lg font-bold mb-6 tracking-tight uppercase italic text-center">
+              {editId ? 'Update Entry' : 'New Entry'}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <input placeholder="Item name" required className="w-full px-5 py-4 bg-gray-50 rounded-xl outline-none border border-transparent focus:border-gray-200 font-medium transition-all" value={form.item} onChange={e => setForm({...form, item: e.target.value})} />
@@ -210,7 +232,6 @@ export default function Home() {
                 <input type="number" placeholder="Paid" required className="w-full px-5 py-4 bg-gray-50 rounded-xl outline-none font-bold text-green-600" value={form.depo} onChange={e => setForm({...form, depo: e.target.value})} />
               </div>
               
-              {/* Category Selector with Colors */}
               <div className="flex gap-2 p-1.5 bg-gray-50 rounded-xl">
                 <button type="button" onClick={() => setForm({...form, kategori: 'Aiman'})} className={`flex-1 py-2 text-[10px] font-bold uppercase rounded-lg transition-all ${form.kategori === 'Aiman' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-400'}`}>Aiman</button>
                 <button type="button" onClick={() => setForm({...form, kategori: 'Dinda'})} className={`flex-1 py-2 text-[10px] font-bold uppercase rounded-lg transition-all ${form.kategori === 'Dinda' ? 'bg-pink-600 text-white shadow-sm' : 'text-gray-400'}`}>Dinda</button>
