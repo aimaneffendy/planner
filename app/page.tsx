@@ -199,7 +199,7 @@ export default function Home() {
       {showModal && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm px-6">
           <div className="bg-white w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl animate-in zoom-in-95 duration-200">
-            <h2 className="text-lg font-bold mb-6 tracking-tight uppercase italic text-center">
+            <h2 className="text-lg font-bold mb-6 tracking-tight uppercase text-center">
               {editId ? 'Update Item' : 'New Item'}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
