@@ -12,8 +12,15 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport = {
+  themeColor: "#F8F9FB",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export const metadata: Metadata = {
-  title: "Planner Aiman&Adinda 💍",
+  title: "Planner Aiman&Adinda",
 };
 
 export default function RootLayout({

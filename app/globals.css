@@ -24,3 +24,12 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+html, body {
+  /* Guna dvh (Dynamic Viewport Height) supaya ngam dengan bar Safari */
+  height: 100dvh; 
+  background-color: #F8F9FB; /* Pastikan sama dengan warna BG page kau */
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}

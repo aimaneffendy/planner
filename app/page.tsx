@@ -81,153 +81,149 @@ export default function Home() {
   const totalDepo = data.reduce((acc, item) => acc + (Number(item.depo) || 0), 0)
   const totalBalance = totalHarga - totalDepo
 
+  // Helper untuk warna kategori
+  const getCatColor = (cat: string) => {
+    switch (cat) {
+      case 'Aiman': return { text: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100', accent: 'bg-blue-600' }
+      case 'Dinda': return { text: 'text-pink-600', bg: 'bg-pink-50', border: 'border-pink-100', accent: 'bg-pink-600' }
+      case 'Common': return { text: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-100', accent: 'bg-amber-600' }
+      default: return { text: 'text-gray-600', bg: 'bg-gray-50', border: 'border-gray-100', accent: 'bg-gray-600' }
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-[#F8F9FB] pb-24 font-sans text-[#1A1C1E]">
-      {/* Top Header App Bar Style */}
-      <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4 mb-6">
-        <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <div>
-            <h1 className="text-xl font-black tracking-tighter uppercase italic text-blue-600">Aiman&Dinda.</h1>
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Planner | 14.6.2026</p>
-          </div>
-          <div className="text-right">
-            <p className="text-[10px] font-black text-orange-500 uppercase">Baki Belum Bayar</p>
-            <p className="text-lg font-bold">RM{totalBalance.toLocaleString()}</p>
-          </div>
-        </div>
+    <div className="min-h-screen bg-white text-[#1A1C1E] font-sans flex flex-col">
+      
+      {/* 1. Top Black Border & Safe Area */}
+      <div className="h-[env(safe-area-inset-top,44px)] bg-white w-full sticky top-0 z-50">
+        <div className="absolute bottom-0 left-0 w-full h-[2.5px] bg-black"></div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4">
-        {/* Quick Stats Grid */}
-        <div className="grid grid-cols-2 gap-3 mb-8">
-          <div className="bg-white p-5 rounded-[2rem] shadow-sm border border-gray-50">
-            <p className="text-[9px] font-black text-gray-400 uppercase mb-1">Total Cost</p>
-            <p className="text-xl font-bold">RM{totalHarga.toLocaleString()}</p>
+      <div className="flex-1 max-w-xl mx-auto w-full px-6 pt-8 pb-20">
+        {/* Sleek Header */}
+        <header className="flex justify-between items-end mb-10">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight uppercase">Dinda<span className="text-blue-600">.</span></h1>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1">Wedding Planner</p>
           </div>
-          <div className="bg-white p-5 rounded-[2rem] shadow-sm border border-gray-50">
-            <p className="text-[9px] font-black text-gray-400 uppercase mb-1 text-green-500">Dah Bayar</p>
-            <p className="text-xl font-bold text-green-600">RM{totalDepo.toLocaleString()}</p>
+          <div className="text-right">
+            <p className="text-[10px] font-bold text-gray-400 uppercase">Balance Due</p>
+            <p className="text-2xl font-semibold tracking-tight">RM{totalBalance.toLocaleString()}</p>
+          </div>
+        </header>
+
+        {/* Hero Card */}
+        <div className="bg-[#121212] rounded-[2rem] p-8 text-white flex justify-between items-center mb-10 shadow-lg">
+          <div>
+            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Total Expenses</p>
+            <p className="text-2xl font-semibold tracking-tight">RM{totalHarga.toLocaleString()}</p>
+          </div>
+          <div className="w-[1px] h-10 bg-gray-800"></div>
+          <div>
+            <p className="text-[10px] font-bold text-green-400 uppercase tracking-widest mb-1">Paid Amount</p>
+            <p className="text-2xl font-semibold tracking-tight">RM{totalDepo.toLocaleString()}</p>
           </div>
         </div>
 
-        {/* List Section */}
+        {/* Inventory List */}
         <div className="space-y-4">
-          <div className="flex justify-between items-center px-2">
-            <h2 className="font-black uppercase text-xs tracking-[0.2em] text-gray-400">Senarai Expenses</h2>
-            <span className="text-[10px] font-bold text-gray-300 italic">Hold ⋮⋮ to reorder</span>
-          </div>
-
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="expenses">
               {(provided) => (
                 <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-3">
-                  {data.map((item, index) => (
-                    <Draggable key={item.id} draggableId={item.id} index={index}>
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          className={`relative group bg-white p-5 rounded-[2.5rem] border border-gray-100 transition-all ${
-                            snapshot.isDragging ? 'shadow-2xl ring-2 ring-blue-500 scale-[1.02] z-50' : 'shadow-sm'
-                          }`}
-                        >
-                          <div className="flex items-center gap-4">
-                            {/* Drag Handle */}
-                            <div {...provided.dragHandleProps} className="text-gray-300 text-xl font-bold p-2">
-                              ⋮⋮
-                            </div>
-
-                            {/* Info */}
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 mb-1">
-                                <span className={`w-2 h-2 rounded-full ${
-                                  item.kategori === 'Aiman' ? 'bg-blue-400' : item.kategori === 'Dinda' ? 'bg-pink-400' : 'bg-yellow-400'
-                                }`}></span>
-                                <h3 className="font-bold text-gray-800 truncate leading-tight">{item.item}</h3>
+                  {data.map((item, index) => {
+                    const colors = getCatColor(item.kategori);
+                    return (
+                      <Draggable key={item.id} draggableId={item.id} index={index}>
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            className={`bg-white rounded-2xl border ${snapshot.isDragging ? 'shadow-xl scale-[1.02] z-40 ' + colors.border : 'border-gray-100'} transition-all`}
+                          >
+                            <div className="p-5">
+                              <div className="flex items-center gap-4">
+                                <div {...provided.dragHandleProps} className="text-gray-200 active:text-gray-400">
+                                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <h3 className="font-semibold text-[15px] truncate tracking-tight uppercase">{item.item}</h3>
+                                  <p className="text-[11px] text-gray-400 tracking-wide font-medium">
+                                    {item.vendor || 'No Vendor'} • <span className={`${colors.text} font-bold uppercase`}>{item.kategori}</span>
+                                  </p>
+                                </div>
+                                <div className="text-right">
+                                  <p className="text-[15px] font-bold">RM{(item.harga - item.depo).toLocaleString()}</p>
+                                  <p className="text-[9px] font-bold text-gray-300 uppercase">Balance</p>
+                                </div>
                               </div>
-                              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight truncate ml-4">
-                                {item.vendor || 'Tiada Vendor'}
-                              </p>
-                            </div>
-
-                            {/* Price Info (Mobile Friendly) */}
-                            <div className="text-right">
-                              <p className="text-[9px] font-black text-gray-300 uppercase">Baki</p>
-                              <p className="font-mono font-black text-orange-500 text-lg leading-none">
-                                {(item.harga - item.depo).toLocaleString()}
-                              </p>
+                              <div className="mt-4 pt-4 border-t border-gray-50 flex justify-between items-center">
+                                <div className="flex gap-4 text-[10px] font-bold uppercase text-gray-400 tracking-tighter">
+                                  <span>Total: RM{item.harga}</span>
+                                  <span className="text-green-500 font-bold">Paid: RM{item.depo}</span>
+                                </div>
+                                <div className="flex gap-3">
+                                  <button onClick={() => openEdit(item)} className="text-[10px] font-bold uppercase text-gray-400 hover:text-black">Edit</button>
+                                  <button onClick={() => deleteItem(item.id)} className="text-[10px] font-bold uppercase text-gray-400 hover:text-red-500">Del</button>
+                                </div>
+                              </div>
                             </div>
                           </div>
-
-                          {/* Detail Breakdown (Expand on Desktop or Keep simple for Mobile) */}
-                          <div className="mt-4 pt-4 border-t border-gray-50 flex justify-between items-center">
-                             <div className="flex gap-4">
-                               <div className="text-center">
-                                  <p className="text-[8px] font-black text-gray-300 uppercase">Harga</p>
-                                  <p className="text-[10px] font-bold text-gray-600 italic">RM{item.harga}</p>
-                               </div>
-                               <div className="text-center">
-                                  <p className="text-[8px] font-black text-gray-300 uppercase">Depo</p>
-                                  <p className="text-[10px] font-bold text-green-500 italic">RM{item.depo}</p>
-                               </div>
-                             </div>
-                             
-                             <div className="flex gap-2">
-                                <button onClick={() => openEdit(item)} className="bg-gray-50 text-[10px] font-black px-4 py-2 rounded-full hover:bg-black hover:text-white transition-all">EDIT</button>
-                                <button onClick={() => deleteItem(item.id)} className="text-red-300 hover:text-red-500 p-2">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg>
-                                </button>
-                             </div>
-                          </div>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
+                        )}
+                      </Draggable>
+                    );
+                  })}
                   {provided.placeholder}
                 </div>
               )}
             </Droppable>
           </DragDropContext>
+
+          {/* Button Add Item - Tetap di bawah List */}
+          <button 
+            onClick={() => setShowModal(true)}
+            className="w-full mt-8 bg-[#121212] text-white py-5 rounded-2xl flex items-center justify-center gap-3 shadow-md active:scale-[0.98] transition-all"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span className="text-sm font-bold uppercase tracking-widest">Add New Item</span>
+          </button>
         </div>
+
+        {/* Footer */}
+        <footer className="mt-20 text-center">
+          <p className="text-[10px] font-bold text-gray-300 uppercase tracking-[0.4em]">Peninggggg!</p>
+        </footer>
       </div>
 
-      {/* Floating Action Button (Mobile Style) */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-xs px-4">
-        <button 
-          onClick={() => setShowModal(true)}
-          className="w-full bg-blue-600 text-white py-4 rounded-full font-black shadow-2xl shadow-blue-200 hover:scale-95 active:scale-90 transition-all uppercase tracking-widest text-xs"
-        >
-          + TAMBAH ITEM
-        </button>
-      </div>
-
-      {/* Modal Form - Redesigned for Mobile (Bottom Sheet style on Mobile) */}
+      {/* Modal - FLOATING STYLE */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/40 backdrop-blur-sm p-0 md:p-4">
-          <div className="bg-white w-full max-w-md rounded-t-[3rem] md:rounded-[3rem] p-8 shadow-2xl animate-in slide-in-from-bottom duration-300">
-            <div className="w-12 h-1.5 bg-gray-100 rounded-full mx-auto mb-8 md:hidden"></div>
-            <h2 className="text-2xl font-black mb-6 uppercase tracking-tight">{editId ? 'Edit Barang' : 'Barang Baru'}</h2>
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm px-6">
+          <div className="bg-white w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl animate-in zoom-in-95 duration-200">
+            <h2 className="text-lg font-bold mb-6 tracking-tight uppercase italic text-center">
+              {editId ? 'Update Entry' : 'New Entry'}
+            </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <input placeholder="Nama Barang" required className="w-full p-4 bg-gray-50 rounded-2xl outline-none border border-transparent focus:border-blue-500 font-bold" value={form.item} onChange={e => setForm({...form, item: e.target.value})} />
-              <input placeholder="Vendor" className="w-full p-4 bg-gray-50 rounded-2xl outline-none border border-transparent focus:border-blue-500" value={form.vendor} onChange={e => setForm({...form, vendor: e.target.value})} />
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="text-[9px] font-black text-gray-400 uppercase ml-2">Harga</label>
-                  <input type="number" step="any" required className="w-full p-4 bg-gray-50 rounded-2xl outline-none border border-transparent focus:border-blue-500 font-black" value={form.harga} onChange={e => setForm({...form, harga: e.target.value})} />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-[9px] font-black text-gray-400 uppercase ml-2">Depo</label>
-                  <input type="number" step="any" required className="w-full p-4 bg-gray-50 rounded-2xl outline-none border border-transparent focus:border-blue-500 font-black" value={form.depo} onChange={e => setForm({...form, depo: e.target.value})} />
-                </div>
+              <input placeholder="Item name" required className="w-full px-5 py-4 bg-gray-50 rounded-xl outline-none border border-transparent focus:border-gray-200 font-medium transition-all" value={form.item} onChange={e => setForm({...form, item: e.target.value})} />
+              <input placeholder="Vendor" className="w-full px-5 py-4 bg-gray-50 rounded-xl outline-none" value={form.vendor} onChange={e => setForm({...form, vendor: e.target.value})} />
+              <div className="grid grid-cols-2 gap-4">
+                <input type="number" placeholder="Cost" required className="w-full px-5 py-4 bg-gray-50 rounded-xl outline-none font-bold" value={form.harga} onChange={e => setForm({...form, harga: e.target.value})} />
+                <input type="number" placeholder="Paid" required className="w-full px-5 py-4 bg-gray-50 rounded-xl outline-none font-bold text-green-600" value={form.depo} onChange={e => setForm({...form, depo: e.target.value})} />
               </div>
-              <select className="w-full p-4 bg-gray-50 rounded-2xl outline-none border border-transparent focus:border-blue-500 font-bold" value={form.kategori} onChange={e => setForm({...form, kategori: e.target.value})}>
-                <option value="Aiman">Aiman</option>
-                <option value="Dinda">Dinda</option>
-                <option value="Common">Others</option>
-              </select>
-              <div className="pt-4 space-y-2">
-                <button type="submit" className="w-full bg-black text-white p-5 rounded-2xl font-black uppercase tracking-widest text-xs">SAVE</button>
-                <button type="button" onClick={closeModal} className="w-full text-gray-400 p-3 font-black text-[10px] uppercase tracking-widest">CANCEL</button>
+              
+              {/* Category Selector with Colors */}
+              <div className="flex gap-2 p-1.5 bg-gray-50 rounded-xl">
+                <button type="button" onClick={() => setForm({...form, kategori: 'Aiman'})} className={`flex-1 py-2 text-[10px] font-bold uppercase rounded-lg transition-all ${form.kategori === 'Aiman' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-400'}`}>Aiman</button>
+                <button type="button" onClick={() => setForm({...form, kategori: 'Dinda'})} className={`flex-1 py-2 text-[10px] font-bold uppercase rounded-lg transition-all ${form.kategori === 'Dinda' ? 'bg-pink-600 text-white shadow-sm' : 'text-gray-400'}`}>Dinda</button>
+                <button type="button" onClick={() => setForm({...form, kategori: 'Common'})} className={`flex-1 py-2 text-[10px] font-bold uppercase rounded-lg transition-all ${form.kategori === 'Common' ? 'bg-amber-500 text-white shadow-sm' : 'text-gray-400'}`}>Common</button>
+              </div>
+
+              <div className="pt-4 flex flex-col gap-3">
+                <button type="submit" className="w-full bg-black text-white py-4 rounded-xl font-bold text-xs uppercase tracking-[0.2em] shadow-lg active:scale-95 transition-all">
+                  Save
+                </button>
+                <button type="button" onClick={closeModal} className="w-full py-2 text-gray-300 text-[10px] font-bold uppercase tracking-widest text-center">
+                  Cancel
+                </button>
               </div>
             </form>
           </div>
